@@ -42,6 +42,7 @@ int latestTimeElapsed() {
 Table table;
 boolean isPaused = false;
 int startTime = 0;
+AxisValue currentAxis = AxisValue.DISTANCE; // Allow toggle between distance/speed axis
 
 ArrayList<Float> distanceData = new ArrayList();
 ArrayList<Float> speedData = new ArrayList();
@@ -75,16 +76,21 @@ void setup() {
      .setPosition(15, 30)
      .setSize(100, 30)
      .setLabel("Pause");
-  
-  cp5.addButton("exportData")
+     
+  cp5.addButton("resetData")
     .setPosition(130, 30)
     .setSize(100, 30)
-    .setLabel("Export");
-  
-  cp5.addButton("resetData")
+    .setLabel("Reset");
+    
+  cp5.addButton("toggleAxis")
     .setPosition(245, 30)
     .setSize(100, 30)
-    .setLabel("Reset");
+    .setLabel("Toggle axis");
+  
+  cp5.addButton("exportData")
+    .setPosition(360, 30)
+    .setSize(100, 30)
+    .setLabel("Export");
 }
 
 void draw() {
@@ -118,13 +124,6 @@ public void resetData() {
   table.clearRows();
   
   updateLineChart();
-}
-
-// Function to toggle the pause state and update the button label.
-public void togglePause() {
-  isPaused = !isPaused;
-  
-  pauseButton.setLabel(isPaused ? "Resume" : "Pause");
 }
 
 // Reads data from the serial port, validates it, and updates the latest data.
@@ -181,10 +180,34 @@ void handleLatestData() {
   newRow.setFloat("Speed", speed);
 }
 
+enum AxisValue {
+  DISTANCE,
+  SPEED
+}
+
+// Function to toggle the pause state and update the button label.
+public void togglePause() {
+  isPaused = !isPaused;
+  
+  pauseButton.setLabel(isPaused ? "Resume" : "Pause");
+}
+
+// Toggles the displayed axis between distance and speed on the line chart.
+public void toggleAxis() {
+  currentAxis = currentAxis == AxisValue.DISTANCE ? AxisValue.SPEED : AxisValue.DISTANCE;
+  
+  if (currentAxis == AxisValue.DISTANCE) {
+    lineChart.setYAxisLabel("Distance / cm\n");
+  } else if (currentAxis == AxisValue.SPEED) {
+    lineChart.setYAxisLabel("Speed / cm/s\n");
+  }
+  
+  updateLineChart();
+}
 
 // Updates the line chart with the latest data, ensuring the parameters are float[].
 void updateLineChart() {
-  lineChart.setData(convertIntArrayListToFloatArray(timeData), convertFloatArrayListToFloatArray(distanceData));
+  lineChart.setData(convertIntArrayListToFloatArray(timeData), currentAxis == AxisValue.DISTANCE ? convertFloatArrayListToFloatArray(distanceData) : convertFloatArrayListToFloatArray(speedData));
 }
 
 // Clears the serial port buffer to ensure fresh data is read.
