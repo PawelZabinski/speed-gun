@@ -76,7 +76,8 @@ void loop() {
     float timeInterval = (currentTime - previousTime) / 1000.0;
     speeds.add((medianDistance - previousDistance) / timeInterval);
 
-    float medianSpeed = abs(speeds.getMedianAverage(3));
+    // abs(speeds.getMedianAverage(3));
+    float medianSpeed = speeds.getMedianAverage(3);
 
     if (mode == PLOT_MODE)
       plotMode(medianDistance, medianSpeed, currentTime);
