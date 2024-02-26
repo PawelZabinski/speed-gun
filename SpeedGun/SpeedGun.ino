@@ -1,3 +1,6 @@
+// Author: Pawel Zabinski
+// Latest Edit: 26/02/2024
+
 #include <NewPing.h>
 #include <LiquidCrystal.h>
 #include "RunningMedian.h"
@@ -21,11 +24,12 @@
 #define PLOT_MODE 1
 #define CALIBRATION_MODE 2
 
+// There is a pull-up resistor (4.7kΩ) in these buttons; LOW signifies pressed, HIGH signifies not pressed
 ModeButton blackBtn(BLACK_BTN_PIN, CALIBRATION_MODE);
 ModeButton redBtn(RED_BTN_PIN, PLOT_MODE);
 
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
-LiquidCrystal lcd(7,6,5,4,3,2); // Initialize the LCD library with the numbers of the interface pins
+LiquidCrystal lcd(7,6,5,4,3,2); // Initialise the LCD library
 RunningMedian speeds = RunningMedian(SPEED_SAMPLES); // RunningMedian library helps to easily add new samples every iteration and calculates a running average median which automatically rejects anomalies
 
 // Tracks the current mode, alternates between Standard (shows normal speed), Plot mode (plots graphs of distance and speed in SerialPlotter), and Calibration mode (calibrates readings from ultrasonic sensor for higher accuracy)
@@ -100,9 +104,9 @@ void plotMode(float medianDistance, float medianSpeed, long elapsedTime) {
 
   Serial.print("<");
   Serial.print(medianDistance);
-  Serial.print(" ");
+  Serial.print("  ");
   Serial.print(medianSpeed);
-  Serial.print(" ");
+  Serial.print("  ");
   Serial.print(elapsedTime);
   Serial.println(">");
 }
