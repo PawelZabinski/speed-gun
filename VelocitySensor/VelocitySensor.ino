@@ -151,6 +151,9 @@ void calibrationMode() {
   }
 
   lcd.clear();
+  lcd.setCursor(0, 1);
+  lcd.print("Calibration done");
+  
   delay(2000); // Display calibration done message for 2 seconds
   mode = STANDARD_MODE; // Go back to standard mode after calibration
 }
